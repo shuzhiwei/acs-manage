@@ -20,4 +20,4 @@ restart:
 	$(PROJECT_NAME):$(VERSION)
 
 clean:
-	docker images | grep none | xargs docker rmi 
+	docker images | grep none | awk '{print $3}' | xargs docker rmi 
