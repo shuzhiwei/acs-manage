@@ -16,6 +16,10 @@ password = config.get('mysql', 'password')
 
 db = web.database(dbn='mysql',host=host, port=port, user=user, pw=password, db=db)
 
+# 根据id删除rule
+def delete_rule_on_id(id):
+    db.delete('casbin_rule', where="id=$id", vars=locals())
+
 # 删除rule
 def delete_rule(p_type, v0, v1, v2, v3):
     if not v3:

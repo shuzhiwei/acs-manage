@@ -126,11 +126,7 @@ class DeletePolicy:
         try:
             web.header("Access-Control-Allow-Origin", "*")
             token = web.input().token
-            p_type = web.input().p_type
-            v0 = web.input().v0
-            v1 = web.input().v1
-            v2 = web.input().v2
-            v3 = web.input().v3
+            ids = web.input().ids
             try:
                 parse_token = jwt.decode(token, 'secret', algorithms='HS256')
             except Exception as e:
@@ -143,7 +139,8 @@ class DeletePolicy:
             sub = username
             act = 'write'
             if e.enforce(sub, dom, obj, act):
-                casbin_rule.delete_rule(p_type, v0, v1, v2, v3)
+                for id in ids[:-2].split(','):
+                    casbin_rule.delete_rule_on_id(id)
                 acs_policy_version.add_version()
                 return json.dumps({'status': 'ok', "code": 200, 'message': 'success'})
             else:
