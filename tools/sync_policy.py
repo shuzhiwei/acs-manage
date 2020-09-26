@@ -5,6 +5,7 @@ version = -1
 
 def syncPolicy(domain):
     while True:
+        global veriosn
         url = 'http://172.26.21.91:8082/api/v1/policy/version'
         con = requests.get(url).text
         d_con = json.loads(con)
