@@ -4,8 +4,8 @@ export NODE_PORT=8084
 export CONTAINER_PORT=8080
 
 build:
-	docker build -t $(PROJECT_NAME):$(VERSION) .
-	
+	docker build -t $(PROJECT_NAME):$(VERSION) -f ./Dockerfile ../
+
 run:
 	docker run --name $(PROJECT_NAME) -d -p $(NODE_PORT):$(CONTAINER_PORT) \
 	--restart=always --cpus 1 -m 1024m \
