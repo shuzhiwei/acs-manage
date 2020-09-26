@@ -1,6 +1,6 @@
 export PROJECT_NAME=acs-manage
 export VERSION=v1
-export NODE_PORT=8084
+export NODE_PORT=8085
 export CONTAINER_PORT=8080
 
 build:
