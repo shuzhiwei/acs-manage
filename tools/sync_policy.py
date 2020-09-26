@@ -1,11 +1,13 @@
 import json, requests
-import time
+import time, threading
 
+lock = threading.RLock()
 version = -1
 
 def syncPolicy(domain):
     while True:
-        global veriosn
+        global version
+        lock.acquire()
         url = 'http://172.26.21.91:8082/api/v1/policy/version'
         con = requests.get(url).text
         d_con = json.loads(con)
@@ -16,5 +18,9 @@ def syncPolicy(domain):
             with open('confs/policy.csv', 'w') as f:
                 f.write(con)
             version = data
+        lock.release()
         time.sleep(60)
+
+
+
 
