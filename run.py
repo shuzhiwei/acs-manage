@@ -1,3 +1,4 @@
+import os, configparser
 import web, json
 import jwt, time
 import threading
@@ -15,7 +16,13 @@ urls = (
 
 app = web.application(urls, globals())
 lock = threading.RLock()
-dom = 'acs'
+
+parent_dir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')
+config = configparser.ConfigParser()
+full_path = parent_dir + '/confs/config.ini'
+config.read(full_path)
+dom = config.get('acs', 'domain')
+# dom = 'acs'
 obj = 'config'
 
 class ShowPolicy:

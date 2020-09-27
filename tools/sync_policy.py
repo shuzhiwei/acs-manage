@@ -1,3 +1,4 @@
+import os, configparser
 import json, requests
 import time, threading
 
@@ -21,6 +22,12 @@ def syncPolicy(domain):
         lock.release()
         time.sleep(60)
 
-
+if __name__ == "__main__":
+    parent_dir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')
+    config = configparser.ConfigParser()
+    full_path = parent_dir + '/../confs/config.ini'
+    config.read(full_path)
+    domain = config.get('acs', 'domain')
+    syncPolicy(domain)
 
 
