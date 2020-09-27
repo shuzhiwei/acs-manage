@@ -139,7 +139,7 @@ class DeletePolicy:
             sub = username
             act = 'write'
             if e.enforce(sub, dom, obj, act):
-                for id in ids[:-2].split(','):
+                for id in ids[:len(ids)-1].split(','):
                     casbin_rule.delete_rule_on_id(id)
                 acs_policy_version.add_version()
                 return json.dumps({'status': 'ok', "code": 200, 'message': 'success'})
