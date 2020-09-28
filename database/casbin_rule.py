@@ -52,7 +52,7 @@ def get_rules(domain):
 # 获取所有的rules
 def get_all_rules():
     try:
-        res = db.select('casbin_rule')
+        res = db.select('casbin_rule', order='id DESC')
         if len(res) > 1:
             res_list = []
             for i in res:
@@ -63,3 +63,5 @@ def get_all_rules():
     except Exception as e:
         print(e)
         return 0
+
+# 分页获取rules
