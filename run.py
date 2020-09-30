@@ -9,6 +9,7 @@ from database import casbin_rule, acs_policy_version
 from logger.logger import logger
 
 urls = (
+    '/policy/update', 'UpdatePolicy',
     '/policy/show', 'ShowPolicy',
     '/policy/add', 'AddPolicy',
     '/policy/delete', 'DeletePolicy',
@@ -24,6 +25,39 @@ config.read(full_path)
 dom = config.get('acs', 'domain')
 # dom = 'acs'
 obj = 'config'
+
+class UpdatePolicy:
+    def POST(self):
+        try:
+            web.header("Access-Control-Allow-Origin", "*")
+            token = web.input().token
+            try:
+                parse_token = jwt.decode(token, 'secret', algorithms='HS256')
+            except Exception as e:
+                logger.error(e)
+                logger.error(traceback.format_exc())
+                return json.dumps({'status': 'fail', 'code': 402, 'message': 'token expired'})
+
+            id = web.input().id
+            p_type = web.input().p_type
+            v0 = web.input().v0
+            v1 = web.input().v1
+            v2 = web.input().v2
+            v3 = web.input().v3
+
+            username = parse_token['username']
+            e = casbin.Enforcer("confs/model.conf", "confs/policy.csv")
+            sub = username
+            act = 'read'
+            if e.enforce(sub, dom, obj, act):
+                rules = casbin_rule.update_rule(id, p_type, v0, v1, v2, v3)
+                return json.dumps({'status': 'ok', "code": 200, 'message': 'success', 'data': rules})
+            else:
+                return json.dumps({'status': 'fail', 'code': 401, 'message': 'unauthorization operation'})
+        except Exception as e:
+            logger.error(e)
+            logger.error(traceback.format_exc())
+            return json.dumps({'status': 'fail', 'code': 500, 'message': str(e)})
 
 class ShowPolicy:
     def GET(self):

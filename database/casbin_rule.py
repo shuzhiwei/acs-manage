@@ -65,3 +65,11 @@ def get_all_rules():
         return 0
 
 # 分页获取rules
+
+# 更新rule
+def update_rule(id, p_type, v0, v1, v2, v3):
+    db.update('casbin_rule', where='id=$id', vars=locals(), p_type=p_type, v0=v0, v1=v1, v2=v2, v3=v3)
+
+
+if __name__ == "__main__":
+    update_rule(9, 'g', 'shuzhiwei', 'blog', 'admin_role', '')
