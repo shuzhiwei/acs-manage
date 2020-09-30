@@ -65,10 +65,25 @@ def get_all_rules():
         return 0
 
 # 分页获取rules
+def get_rules_on_page(pageSize, pageNo):
+    a = (int(pageNo) - 1) * int(pageSize)
+    sql = 'select * from casbin_rule order by id desc limit ' + str(a) + ', ' + str(pageSize)
+    res = db.query(sql)
+    d_list = []
+    for i in res:
+        d_list.append(i)
+    return d_list
 
 # 更新rule
 def update_rule(id, p_type, v0, v1, v2, v3):
     db.update('casbin_rule', where='id=$id', vars=locals(), p_type=p_type, v0=v0, v1=v1, v2=v2, v3=v3)
+
+# 获取表中数据量
+def get_rules_count():
+    sql = 'select count(*) aa from casbin_rule'
+    res = db.query(sql)
+    value = res[0].aa
+    return value
 
 
 if __name__ == "__main__":

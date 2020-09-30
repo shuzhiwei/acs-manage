@@ -4,6 +4,7 @@ import jwt, time
 import threading
 import traceback
 import casbin
+from collections import OrderedDict
 from tools.sync_policy import syncPolicy
 from database import casbin_rule, acs_policy_version
 from logger.logger import logger
@@ -80,13 +81,34 @@ class ShowPolicy:
                 logger.error(traceback.format_exc())
                 return json.dumps({'status': 'fail', 'code': 402, 'message': 'token expired'})
 
+            pageSize = web.input().pageSize
+            pageNo = web.input().pageNo
+
             username = parse_token['username']
             e = casbin.Enforcer("confs/model.conf", "confs/policy.csv")
             sub = username
             act = 'read'
             if e.enforce(sub, dom, obj, act):
-                rules = casbin_rule.get_all_rules()
-                return json.dumps({'status': 'ok', "code": 200, 'message': 'success', 'data': rules})
+                rules = casbin_rule.get_rules_on_page(pageSize, pageNo)
+
+                if rules:
+                    d_list = []
+                    for i in rules:
+                        d_dict = OrderedDict()
+                        d_dict['id'] = i.id
+                        d_dict['p_type'] = i.p_type
+                        d_dict['v0'] = i.v0
+                        d_dict['v1'] = i.v1
+                        d_dict['v2'] = i.v2
+                        d_dict['v3'] = i.v3
+                        d_list.append(d_dict)
+
+                    totalCount = casbin_rule.get_rules_count()
+                    totalPage = int(totalCount / int(pageSize))
+                    totalPage_yu = totalCount % int(pageSize)
+                    if totalPage_yu:
+                        totalPage = totalPage + 1
+                    return json.dumps({'status': 'ok', "code": 200, 'totalCount': totalCount, 'totalPage': totalPage, 'message': 'success', 'data': d_list})
             else:
                 return json.dumps({'status': 'fail', 'code': 401, 'message': 'unauthorization operation'})
         except Exception as e:
