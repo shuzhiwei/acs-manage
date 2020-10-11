@@ -49,10 +49,11 @@ class UpdatePolicy:
             username = parse_token['username']
             e = casbin.Enforcer("confs/model.conf", "confs/policy.csv")
             sub = username
-            act = 'read'
+            act = 'write'
             if e.enforce(sub, dom, obj, act):
-                rules = casbin_rule.update_rule(id, p_type, v0, v1, v2, v3)
-                return json.dumps({'status': 'ok', "code": 200, 'message': 'success', 'data': rules})
+                casbin_rule.update_rule(id, p_type, v0, v1, v2, v3)
+                acs_policy_version.add_version()
+                return json.dumps({'status': 'ok', "code": 200, 'message': 'success'})
             else:
                 return json.dumps({'status': 'fail', 'code': 401, 'message': 'unauthorization operation'})
         except Exception as e:
