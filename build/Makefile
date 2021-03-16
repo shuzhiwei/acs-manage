@@ -10,6 +10,11 @@ run:
 	docker run --name $(PROJECT_NAME) -d -p $(NODE_PORT):$(CONTAINER_PORT) \
 	--restart=always --cpus 1 -m 1024m \
 	-v /opt/data/docker-apps-logs/$(PROJECT_NAME)/:/tmp/ \
+	-e host=$${host} \
+	-e port=$${port} \
+	-e user=$${user} \
+	-e password=$${password} \
+	-e database=$${database} \
 	$(PROJECT_NAME):$(VERSION)
 
 restart:
@@ -17,6 +22,11 @@ restart:
 	docker run --name $(PROJECT_NAME) -d -p $(NODE_PORT):$(CONTAINER_PORT) \
 	--restart=always --cpus 1 -m 1024m \
 	-v /opt/data/docker-apps-logs/$(PROJECT_NAME)/:/tmp/ \
+	-e host=$${host} \
+	-e port=$${port} \
+	-e user=$${user} \
+	-e password=$${password} \
+	-e database=$${database} \
 	$(PROJECT_NAME):$(VERSION)
 
 clean:

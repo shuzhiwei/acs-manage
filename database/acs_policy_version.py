@@ -1,17 +1,13 @@
 import web, datetime
-import configparser
 import os, sys
 
-# 解析配置
-parent_dir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')
-config = configparser.ConfigParser()
-full_path = parent_dir + '/../confs/config.ini'
-config.read(full_path)
-host = config.get('mysql', 'host')
-port = config.getint('mysql', 'port')
-user = config.get('mysql', 'user')
-db = config.get('mysql', 'db')
-password = config.get('mysql', 'password')
+env = os.environ
+host = env.get('host')
+port = int(env.get('port'))
+user = env.get('user')
+password = env.get('password')
+db = env.get('database')
+
 db = web.database(dbn='mysql',host=host, port=port, user=user, pw=password, db=db)
 
 # 获取版本
